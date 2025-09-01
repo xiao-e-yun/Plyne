@@ -6,7 +6,8 @@ license = "BSD-3-Clause"
 description = "Based pipeline of async task system"
 authors = ["xiao-e-yun <a0970323059@gmail.com>"]
 repository = "https://github.com/xiao-e-yun/Plyne"
-categories = ["async", "pipeline", "task"]
+keywords = ["async", "pipeline", "task"]
+categories = ["asynchronous"]
 
 [dependencies]
 tokio = { version = "1", features = ["macros", "sync"] }
