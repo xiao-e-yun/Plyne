@@ -1,0 +1,20 @@
+[package]
+name = "plyne"
+version = "0.0.1"
+edition = "2024"
+license = "BSD-3-Clause"
+description = "Based pipeline of async task system"
+authors = ["xiao-e-yun <a0970323059@gmail.com>"]
+repository = "https://github.com/xiao-e-yun/Plyne"
+categories = ["async", "pipeline", "task"]
+
+[dependencies]
+tokio = { version = "1", features = ["macros", "sync"] }
+futures = "0.3"
+magic-params = "0.0.4"
+thiserror = "2"
+take-once = "0.1"
+paste = "1"
+
+[dev-dependencies]
+tokio = { version = "1", features = ["macros", "sync", "rt", "time"] }
