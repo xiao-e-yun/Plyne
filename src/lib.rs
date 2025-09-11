@@ -42,7 +42,7 @@ macro_rules! define_tasks {
                 }
             )*
 
-            $crate::magic_params::context_as_params!([< $tasks_name Context >]);
+            $crate::magic_params::context_as_params!([< $tasks_name Context >], 12);
         
             // System
             struct $tasks_name([< $tasks_name Context >]);
