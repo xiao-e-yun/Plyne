@@ -27,11 +27,11 @@ async fn get_users_by_const(user_pipeline: UserPipelineInput) {
 }
 
 async fn get_data_from_dataset(
-    dataset: Dataset,
+    dataset: &Dataset,
     user_pipeline: UserPipelineInput,
     post_pipeline: PostPipelineInput,
 ) {
-    assert_eq!(*dataset, "Dataset");
+    assert_eq!(&dataset.0, "Dataset");
     tokio::time::sleep(std::time::Duration::from_millis(10)).await;
     [10, 30]
         .into_iter()

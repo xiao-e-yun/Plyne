@@ -33,11 +33,11 @@ macro_rules! define_tasks {
             });
             
             $(
-                impl [< From $tasks_name Context >] for [< $name Input >] {
+                impl [< From $tasks_name Context >]<'_> for [< $name Input >] {
                     fn from_context(ctx: &[< $tasks_name Context >]) -> Self { [< $name Input >](ctx.[< $name:snake >].input().unwrap()) }
                 }
 
-                impl [< From $tasks_name Context >] for [< $name Output >] {
+                impl [< From $tasks_name Context >]<'_> for [< $name Output >] {
                     fn from_context(ctx: &[< $tasks_name Context >]) -> Self { [< $name Output >](ctx.[< $name:snake >].output().unwrap()) }
                 }
             )*
