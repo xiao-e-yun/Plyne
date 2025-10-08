@@ -1,13 +1,15 @@
-use plyne::define_tasks;
+use plyne::{define_tasks, Input, Output};
+
+pub struct Uncloneable;
 
 define_tasks! {
     ResolvePostsSystem,
     pipelines {
-        UserPipeline: u32,
-        PostPipeline: u32,
+        user_pipeline: i32,
+        post_pipeline: u32,
     }
     vars {
-        Dataset: String,
+        dataset: String,
     }
     tasks {
         get_users_by_const,
@@ -22,16 +24,16 @@ async fn main() {
     ResolvePostsSystem::new("Dataset".to_string()).execute().await;
 }
 
-async fn get_users_by_const(user_pipeline: UserPipelineInput) {
+async fn get_users_by_const(user_pipeline: Input<i32>) {
     user_pipeline.send(10).unwrap();
 }
 
 async fn get_data_from_dataset(
-    dataset: &Dataset,
-    user_pipeline: UserPipelineInput,
-    post_pipeline: PostPipelineInput,
+    dataset: &String,
+    user_pipeline: Input<i32>,
+    post_pipeline: Input<u32>
 ) {
-    assert_eq!(&dataset.0, "Dataset");
+    assert_eq!(dataset, "Dataset");
     tokio::time::sleep(std::time::Duration::from_millis(10)).await;
     [10, 30]
         .into_iter()
@@ -42,8 +44,8 @@ async fn get_data_from_dataset(
 }
 
 async fn fetch_posts_by_users(
-    mut user_pipeline: UserPipelineOutput,
-    post_pipeline: PostPipelineInput,
+    mut user_pipeline: Output<i32>,
+    post_pipeline: Input<u32>
 ) {
     while let Some(user) = user_pipeline.recv().await {
         match user {
@@ -58,7 +60,7 @@ async fn fetch_posts_by_users(
     }
 }
 
-async fn consume_posts(mut post_pipeline: PostPipelineOutput) {
+async fn consume_posts(mut post_pipeline: Output<u32>) {
     while let Some(post) = post_pipeline.recv().await {
         assert!(post.is_multiple_of(5));
     }

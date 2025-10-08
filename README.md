@@ -13,16 +13,16 @@ cargo add plyne
 
 Define tasks
 ```rust
-use plyne::define_tasks;
+use plyne::{define_tasks, Input, Output};
 
 define_tasks! {
     TaskSystem // Name of the task system
     pipelines { // Define pipelines
-        APipeline: Vec<u8>, // you can use APipelineInput or APipelineOutput
+        pipeline: Vec<u8>, // you can use APipelineInput or APipelineOutput
     }
-    vars { // Define variables
-        Dataset: Arc<Vec<u8>>, // Avoid larger types
-        Config: config::Config, // Avoid same name as struct
+    vars { // Define variables (you can use immutable ref or clone)
+        data: Arc<Vec<u8>>,
+        config: Config,
     }
     tasks { // Define tasks
         load_data,
@@ -30,13 +30,13 @@ define_tasks! {
     }
 }
 
-async fn load_data(dataset: dataset, pipeline: APipelineInput) -> String {
+async fn load_data(dataset: &Dataset, pipeline: Input<Vec<u8>>) -> String {
     for data in dataset.chunks(8) {
         pipeline.send(chunk.to_vec());
     }
 }
 
-async fn parse_data(a_pipeline: APipelineOutput, config: Config) -> Vec<u8> {
+async fn parse_data(a_pipeline: Output<Vec<u8>>, config: Config) -> Vec<u8> {
     let mut results = String::new();
     while let Some(data) = a_pipeline.recv().await {
         ... // parse data using config
@@ -48,8 +48,11 @@ Execute tasks
 ```rust
 #[tokio::main]
 async fn main() {
-    TaskSystem::new(
-        vec![13,31,31,32,15,32,14,15,22,22,66,23,17,61]
+    let context = TaskSystem::new(
+        vec![13,31,31,32,15,32,14,15,22,22,66,23,17,61],
+        Config { ... } // your config
     ).execute().await;
+
+    // read config changes, or side effects
 }
 ```
