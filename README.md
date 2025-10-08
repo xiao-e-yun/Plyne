@@ -21,7 +21,7 @@ define_tasks! {
         pipeline: Vec<u8>, // you can use APipelineInput or APipelineOutput
     }
     vars { // Define variables (you can use immutable ref or clone)
-        data: Arc<Vec<u8>>,
+        data: Vec<u8>,
         config: Config,
     }
     tasks { // Define tasks
@@ -30,7 +30,7 @@ define_tasks! {
     }
 }
 
-async fn load_data(dataset: &Dataset, pipeline: Input<Vec<u8>>) -> String {
+async fn load_data(data: &Vec<u8>, pipeline: Input<Vec<u8>>) -> String {
     for data in dataset.chunks(8) {
         pipeline.send(chunk.to_vec());
     }
