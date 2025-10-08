@@ -64,7 +64,7 @@ impl<T> Pipeline<T> {
         let output = self.output.take();
         match output {
             Some(receiver) => Ok(receiver),
-            None => Err(PipelineError::OutputAlreadyTaken.into()),
+            None => Err(PipelineError::OutputAlreadyTaken),
         }
     }
 }
