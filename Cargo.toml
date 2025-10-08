@@ -12,7 +12,7 @@ categories = ["asynchronous"]
 [dependencies]
 tokio = { version = "1", features = ["macros", "sync"] }
 futures = "0.3"
-magic-params = "0.0.4"
+magic-params = "0.1.0"
 thiserror = "2"
 take-once = "0.1"
 paste = "1"
