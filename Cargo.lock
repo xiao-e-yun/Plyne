@@ -158,9 +158,9 @@ checksum = "6a82ae493e598baaea5209805c49bbf2ea7de956d50d7da0da1164f9c6d28543"
 
 [[package]]
 name = "magic-params"
-version = "0.1.0"
+version = "0.1.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "428a0260d38fc9439c7076c0e11dc3641abcda34969000ad716430dd0b87367d"
+checksum = "305f71e888ae58f2380a1f575c71ee5fc04b4d90d8e090997566e9e8ca9c6e98"
 dependencies = [
  "paste",
  "seq-macro",
