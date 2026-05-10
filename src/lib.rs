@@ -1,26 +1,29 @@
+pub mod function;
 pub mod pipeline;
 
+pub use function::*;
 pub use pipeline::*;
 
 pub use magic_params;
 pub use paste;
 
+// Pipeline
 pub type Input<T> = tokio::sync::mpsc::UnboundedSender<T>;
 pub type Output<T> = tokio::sync::mpsc::UnboundedReceiver<T>;
 
 #[macro_export]
 macro_rules! define_tasks {
     (
-        $tasks_name: ident $(,)?
+        $tasks_name: ident
         pipelines {
             $($name: ident: $ty: ty),* $(,)?
-        } $(,)?
+        }
         vars {
             $($var: ident: $vty: ty),* $(,)?
-        } $(,)?
+        }
         tasks {
             $($task: ident),* $(,)?
-        } $(,)?
+        }
     ) => {
         $crate::paste::paste! {
             // Context
@@ -29,6 +32,7 @@ macro_rules! define_tasks {
                 $( $var: $vty,)*
             });
 
+            // Pipelines
             $(
                 impl [< From $tasks_name Context >]<'_> for $crate::Input<$ty> {
                     fn from_context(ctx: &[< $tasks_name Context >]) -> Self { ctx.$name.input().unwrap() }

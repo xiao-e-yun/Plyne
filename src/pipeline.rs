@@ -1,7 +1,9 @@
 use std::sync::Mutex;
 
-use tokio::sync::mpsc::{UnboundedReceiver, UnboundedSender, WeakUnboundedSender, unbounded_channel};
 use take_once::TakeOnce;
+use tokio::sync::mpsc::{UnboundedSender, WeakUnboundedSender, unbounded_channel};
+
+use crate::{Input, Output};
 
 #[derive(thiserror::Error, Debug)]
 pub enum PipelineError {
@@ -15,12 +17,12 @@ pub enum PipelineError {
 pub struct Pipeline<T> {
     keep_alive: bool,
     input: Mutex<Sender<T>>,
-    output: TakeOnce<UnboundedReceiver<T>>,
+    output: TakeOnce<Output<T>>,
 }
 
 #[derive(Debug)]
 pub enum Sender<T> {
-    Strong(UnboundedSender<T>),
+    Strong(Input<T>),
     Weak(WeakUnboundedSender<T>),
 }
 
@@ -60,7 +62,7 @@ impl<T> Pipeline<T> {
         Ok(sender)
     }
 
-    pub fn output(&self) -> Result<UnboundedReceiver<T>, PipelineError> {
+    pub fn output(&self) -> Result<Output<T>, PipelineError> {
         let output = self.output.take();
         match output {
             Some(receiver) => Ok(receiver),

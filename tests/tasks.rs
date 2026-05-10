@@ -1,10 +1,11 @@
-use plyne::{define_tasks, Input, Output};
+use plyne::{FnEevent, FnPipeline, Function, FunctionHandler, Input, Output, define_tasks};
 
 pub struct Uncloneable;
 
 define_tasks! {
-    ResolvePostsSystem,
+    ResolvePostsSystem
     pipelines {
+        confirm: FnEevent<(), bool>,
         user_pipeline: i32,
         post_pipeline: u32,
     }
@@ -16,8 +17,10 @@ define_tasks! {
         get_data_from_dataset,
         fetch_posts_by_users,
         consume_posts,
+        user_confirm,
     }
 }
+
 
 #[tokio::test]
 async fn main() {
@@ -45,8 +48,12 @@ async fn get_data_from_dataset(
 
 async fn fetch_posts_by_users(
     mut user_pipeline: Output<i32>,
-    post_pipeline: Input<u32>
+    post_pipeline: Input<u32>,
+    confirm: Function<(), bool>
 ) {
+    if !confirm.call(()).await {
+        return;
+    }
     while let Some(user) = user_pipeline.recv().await {
         match user {
             10 => [10]
@@ -63,5 +70,13 @@ async fn fetch_posts_by_users(
 async fn consume_posts(mut post_pipeline: Output<u32>) {
     while let Some(post) = post_pipeline.recv().await {
         assert!(post.is_multiple_of(5));
+    }
+}
+
+async fn user_confirm(
+    mut confirm: FunctionHandler<(), bool>
+) {
+    while let Some(((), ret)) = confirm.recv().await {
+        ret.send(true).ok();
     }
 }
